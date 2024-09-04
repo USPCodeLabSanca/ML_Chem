@@ -1,0 +1,7 @@
+-> This is kinda working!!
+
+https://sdbs.db.aist.go.jp/IrSpectralView.aspx?fname=NIDA9622&sdbsno=5329
+
+
+
+https://github.com/jgmotta98/spectra-scraper

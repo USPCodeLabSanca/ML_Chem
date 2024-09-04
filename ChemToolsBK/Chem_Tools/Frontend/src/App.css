@@ -1,0 +1,126 @@
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+}
+
+.button-grid {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 0;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.category-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  min-width: 250px;
+  margin-bottom: 20px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.category-column:hover {
+  transform: translateY(-5px);
+}
+
+.category-column h2 {
+  margin-bottom: 15px;
+  width: 100%;
+  color: #b3e5fc;
+  font-size: 1.5em;
+}
+
+.aba {
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 90%;
+  text-align: center;
+  background-color: #0277bd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1em;
+}
+
+.aba:hover {
+  background-color: #01579b;
+  color: white;
+}
+
+.header-image-container {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.header-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+body {
+  padding-top: 0;
+  width: 100%;
+  margin: 0;
+  background-color: #121212;
+}
+
+.ferramentas-quimica {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+h1 {
+  color: #b3e5fc;
+  font-size: 2.5em;
+  margin: 20px 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.conteudo {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #424242;
+  margin: 30px 0;
+}
+
+.aba.input-equation {
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #0277bd;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
