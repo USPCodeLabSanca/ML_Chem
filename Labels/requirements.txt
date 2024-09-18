@@ -1,0 +1,6 @@
+requests
+rdkit
+matplotlib
+scipy
+scikit-learn
+torch
