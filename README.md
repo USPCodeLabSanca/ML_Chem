@@ -16,7 +16,7 @@ Baixe a documentação para mais detalhes:
 ![Alt text](Info/NN.png)
 
 
-Usamos a biblioteca PyTorch para criar e treinar a nossa MLP. Acelerando o processo de treinamento e criando uma rede neural usando uma GPU. PyTorch e uma biblioteca de Python, que nos permite criar modelos de deep learning de forma simples e manipular tensores (matrizes multidimensionais) de forma extremamente eficiente.
+Usamos a biblioteca PyTorch para criar e treinar a nossa RN. Acelerando o processo de treinamento e criando uma rede neural usando uma GPU. PyTorch e uma biblioteca de Python, que nos permite criar modelos de deep learning de forma simples e manipular tensores (matrizes multidimensionais) de forma extremamente eficiente.
 
 
 ![Alt text](Info/Chem.png)
@@ -32,4 +32,12 @@ Este projeto pode ser expandido para a predição de outros tipos de dados quimi
 Entre em contato comigo pelo Telegram [@Ian_dhcb](https://t.me/Ian_dhcb)
 
 Prescisamos achar mais problemas interessantes para resolver, assim como uma vez resolvido, tranformar a solucao em um produto facilemnte utilizavel e escalavel.
+
+
+# Contato
+
+Entre em contato!!
+
+- Email: idhcb.ian@gmail.com
+- Site: [iansmainframe.tech](http://iansmainframe.tech)
 
