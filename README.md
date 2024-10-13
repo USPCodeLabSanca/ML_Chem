@@ -7,11 +7,13 @@
 
 Nesse projeto mostramos a aplicabilidade de Diversas arquiteturas de Redes Neurais para área de espectroscopia, onde usamos ondas, como Raio-x e  Infravermelho para analisar de diversas formas a estrutura de diversos tipos e famílias de moléculas. 
 
-Leia a documentação para mais detalhes [Documentation.pdf](Documentation/Documentation.pdf)
+Baixe a documentação para mais detalhes: 
+
+[Clique aqui para baixar a documentação](Documentation/Documentation.pdf?raw=true)
 
 # PyTorch
 
-![Alt text](Info/Ex.png)
+![Alt text](Info/NN.png)
 
 
 Usamos a biblioteca PyTorch para criar e treinar a nossa MLP. Acelerando o processo de treinamento e criando uma rede neural usando uma GPU. PyTorch e uma biblioteca de Python, que nos permite criar modelos de deep learning de forma simples e manipular tensores (matrizes multidimensionais) de forma extremamente eficiente.
