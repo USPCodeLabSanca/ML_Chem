@@ -5,7 +5,9 @@
 
 ## Mostrar a aplicabilidade de Redes Neurais a problemas quimicos, aprendendo atravez de grandes bases de dados.
 
-Nesse projeto mostramos que podemos criar MLP(Multi Layer Perceptron) que aprende a classificar estruturas quimicas baseado no grafico de DRX (Difracao de Raios X) de uma amostra. Com isso mostramos a aplicabilidade de Redes neurais em problemas quimicos onde deve ser usado mais do que apenas cauculos e formulas deterministicas. Esse projeto pode ser expandido para problemas alem da classificacao de moleculas, e pode em casos mais especificos fazer uma analise mais profunda de uma molecula.
+Nesse projeto mostramos a aplicabilidade de Diversas arquiteturas de Redes Neurais para área de espectroscopia, onde usamos ondas, como Raio-x e  Infravermelho para analisar de diversas formas a estrutura de diversos tipos e famílias de moléculas. 
+
+Leia a documentação para mais detalhes [Documentation.pdf](Documentation/Documentation.pdf)
 
 # PyTorch
 
