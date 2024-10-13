@@ -1,0 +1,32 @@
+
+project-root/
+  ├── frontend/
+  │   ├── public/
+  │   │   ├── index.html
+  │   │   └── favicon.ico
+  │   ├── src/
+  │   │   ├── components/
+  │   │   ├── pages/
+  │   │   ├── hooks/
+  │   │   ├── utils/
+  │   │   ├── styles/
+  │   │   ├── App.js
+  │   │   └── index.js
+  │   ├── package.json
+  │   └── README.md
+  │
+  ├── backend/
+  │   ├── src/
+  │   │   ├── controllers/
+  │   │   ├── models/
+  │   │   ├── routes/
+  │   │   ├── middleware/
+  │   │   ├── utils/
+  │   │   └── app.js
+  │   ├── config/
+  │   ├── tests/
+  │   ├── package.json
+  │   └── README.md
+  │
+  ├── .gitignore
+  └── README.md

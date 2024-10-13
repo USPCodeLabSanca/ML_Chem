@@ -1,0 +1,16 @@
+Version 1
+
+4 layers(Batch Norm and Dropous)
+
+  - Make Final output better
+  - Improve criterion
+  
+
+Version 2 (V1 Organized)
+
+4 layers(Batch Norm and Dropous)
+
+  - Make Final output better
+  - Improve criterion
+  
+
