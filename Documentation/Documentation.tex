@@ -7,22 +7,32 @@
 \usepackage{hyperref}
 
 % Document information
-\title{Rede Neural para IR Spectra Documentação}
+\title{Rede Neurais para Espectroscopia IR}
 \author{Ian Bezerra}
-\date{\today}
+\date{October 2024}
+
 
 \begin{document}
 
+
 \maketitle
+
 
 \begin{abstract}
     Usando redes Neurais para classificar funcoes organicas presentes em um espectro de IR.
 \end{abstract}
 
 \section{Introdução}
-Inicialmente fizemos uma construção de uma rede neural onde classificamos espectros de XRD em moléculas inorgânicas na área da cristalografia, este projeto foi bem sucedido, pela simplicidade do problema abordado, que era de classificação, e o fato de espectros de XRD apresentarem menos variações, conseguimos chegar a grandes precisões com uma rede neural relativamente simples. Com isso seguimos para um problema mais complexo, em uma área onde a complexidade de espectro é muito maior.
+Atuais métodos de análise de espectros de IR (infravermelho) envolvem técnicas manuais e computacionais. Tradicionalmente, químicos experientes interpretam visualmente os picos e padrões do espectro, comparando-os com tabelas de referência e bibliotecas espectrais. Softwares especializados auxiliam nessa análise, oferecendo recursos de comparação automática com bancos de dados e identificação de grupos funcionais. No entanto, esses métodos podem ser demorados e sujeitos a erros humanos, especialmente para moléculas complexas ou misturas. 
 
-A área agora é a química orgânica, vamos para uma simples introdução do problema e o que uma rede neural faria, para depois ampliar a especificações do problema.
+Redes neurais apresentam uma quebra de paradigma na forma que conhecemos e estudamos os padrões emergentes da natureza, pela grande maioria da história essa tarefa foi feita por mentes humanas que analisavam e modelavam tais padrões e criavam modelos e métodos determinísticos para detecção desses padrões. No entanto com o avanço de redes neurais e da computação em paralelo podemos extrair estes padrões emergentes diretamente de grandes quantidades de dados, e de certa forma “cristaliza-los” em arquiteturas de redes neurais, as quais podem ser utilizadas para generalizar estes padrões em dados não vistos previamente.
+
+Inicialmente testamos o uso de redes neurais no reconhecimento de moléculas inorgânicas usando ondas de Raio-x(XRD) para classificação de moléculas, no entanto a simplicidade do problema, devido a natureza das moléculas inorgânicas mostrou que este problema já tinha sido mapeado de forma algorítmica, onde se pode simplesmente buscar um grande dicionário, achando o pico de maior intensidade e em seguida o segundo e assim em diante.
+
+Com isso em mente partimos em busca de um problema mais complexo, um que requer uma certa intuição, experiência do observador. De certa forma buscamos usar a propriedade de emergência de solução desses sistemas de aprendizado de máquina para achar os padrões, dificilmente explicáveis, que criam este senso de intuição.
+
+O problema escolhido foi a identificação de funções orgânicas, a partir de espectros de Infravermelho, adiante sera dito como isso difere do problema de classificação de moléculas.
+
 
 \begin{figure}[h]
     \centering
@@ -62,17 +72,171 @@ No problema de classificação  de moléculas recebemos o espectro como input e 
 
 \section{Dados}
 
+Na maioria dos projetos modernos de aplicações de métodos computacionais, sejam matemáticos ou de aprendizado de máquina, o uso de sistemas como crawlers/Scrappers para a aquisição de dados em grande escala. Isso majoritariamente é devido a falta de infraestrutura de APIs diretas para o download de dados em bul
+
+\subsection{XRD cristalografia, RRUFF -  https://rruff.info/ }
+
+Com sorte o banco de dados do RRUFF pode ser adquirido em bulk na forma de arquivos de formato “.txt” com os pontos xy, assim como o nome da molécula. Com isso foi possível construir o primeiro modelo de AI(MLP) que não vamos entrar em tanto detalhe.
+
+\subsection{SDBS Espectrometría de IR - https://sdbs.db.aist.go.jp/ }
+
+Este banco de dados não apresenta forma simple para o download de dados em Bulk no entanto uma implementação feita por um aluno de engenharia química da UFRJ nos possibilitou adquirir todos os dados xy assim como o nome das moléculas associadas em um banco de dados SQL, na forma “.db”.
+
+Com isso usamos o banco de dados da PubChem para conseguir a forma simples de cada uma das moléculas, e com isso reconhecemos as funções orgânicas presentes em cada uma das moléculas. 
+Futuras melhorias deste método de reconhecimento de funções orgânicas dentro dos dados serão implementadas.
+
+
+\subsection{NIST Espectrometría de IR - https://sdbs.db.aist.go.jp/ }
+
+Pela popularidade deste banco de dados, diversas implementações de crawlers já existiam, assim foi relativamente fácil conseguir o seu arquivo “.db” em SQL, no entanto o número de moléculas foi tão grande que foi necessário usar programação em paralelo em python usando a biblioteca “multiprocessing” para criar o output correspondente desejado para os dados de treinamento.
+
+
+\subsection{Multiprocessing}
+
+Usamos o processamento em paralelo para dividir o banco de dados inicial em pedaços menores, passando um pedaço para cada thread diferente, fazendo com que mais de um script de python opere de uma vez, usando assim um número predeterminado de threads do computador.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Images/Multi.png}
+    \caption{Multiprocessing}
+    \label{fig:ir_spectrum}
+\end{figure}
+
+% No code insertion is needed here as the instructions indicate an empty code block.
+\begin{verbatim}
 ...
 
+data = cursor.fetchall() Importando SQL
+
+print(f"Total number of molecules: {n_molecules}")
+
+n = 12  # Número de workers
+#n_molecules = 100
+
+# Calcula a divisão de moléculas em n grupos
+group_sizes = [n_molecules // n] * (n - 1)
+group_sizes.append(n_molecules - sum(group_sizes))
+
+print(f"Number of groups: {n}")
+print("Molecule distribution:")
+for i, size in enumerate(group_sizes, 1):
+    print(f"n{i} = {size}")
+#print(f"Número total de moléculas: {sum(group_sizes)}")
+#print(group_sizes)
+#print(f"Amostra de dados: {data[1]}")
+
+irange = []
+for i in range(len(group_sizes)):
+    start = sum(group_sizes[:i]) + 1
+    end = sum(group_sizes[:i+1])
+    irange.append([start, end])
+
+#print("irange:")
+#print(irange)
+
+# Lista de tuplas contendo nome do processo e array para passar
+processes = []
+i = 1
+for slice in irange:
+    slice.append(i)
+    processes.append(('fworker2.py', slice))
+    i += 1
+print("Processes:")
+print(processes)
+
+# Criando um pool de processos
+with Pool(processes=n) as pool:
+    # Mapeia a função run_process para a lista de processos
+    pool.map(run_process, processes)
+
+#Apos concluir os processos
+print("Todos os processos foram concluídos.")
+
+\end{verbatim}
+
+\subsection{Worker, Conseguindo os Labels}
+
+Para treinar redes neurais é necessário conter um conjunto de dados rotulados, com os respectivos, inputs para a rede e output “perfeito” esperado, note a nuance nesta palavra, a rede neural irá tratar os respectivos rótulos como o output perfeito a qual ele deve se assemelhar, isso gera uma dependência extremamente grande em dados que contenham não apenas um input compreensível e padronizado mas também dados extremamente bem rotulados, pois as possíveis imperfeições dos rótulos serão interpretados como perfeições a serem aprendidas pela rede neural.
+
+Aqui apresentamos a estrutura do worker que cria os vetores como rótulos com índices correspondentes a o dicionário de funções orgânicas, e 1 ou 0 caso esta molécula tenha ou não a presença desta função orgânica.
+
+\begin{verbatim}
+
+...
+
+def identify_functional_groups(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        return "Invalid SMILES string"
+
+    functional_groups = []
+    patterns = {
+        "Alkyl halide": "[C][F,Cl,Br,I]",
+        "Alcohol": "[OX2H]",
+        "Aldehyde": "[CH1](=O)[#6]",
+        "Ketone": "[#6][CX3](=O)[#6]",
+        "Carboxylic acid": "[CX3](=O)[OX2H1]",
+        "Ester": "[#6][CX3](=O)[OX2H0][#6]",
+        "Ether": "[OD2]([#6])[#6]",
+        "Amine": "[NX3;H2,H1,H0][#6]",
+        "Amide": "[NX3][CX3](=[OX1])[#6]",
+        "Nitro": "[N+](=O)[O-]",
+        "Nitrile": "[C]#N",
+        "Sulfide": "[#16X2H0]",
+        "Sulfoxide": "[#16X3](=[OX1])",
+        "Sulfone": "[#16X4](=[OX1])(=[OX1])",
+        "Phosphate": "[P](=O)([O-])([O-])",
+        "Phenol": "[OX2H][c]",
+        "Imine": "[CX3]=[NX2]",
+        "Alkene": "[CX2]=[CX2]",
+        "Alkyne": "[CX2]#[CX2]",
+        "Thiol": "[SX2H]",
+        "Acyl chloride": "[CX3](=[OX1])[Cl]",
+        "Anhydride": "[CX3](=[OX1])[OX2][CX3](=[OX1])",
+        "Lactam": "[NX3R][CX3R](=[OX1])[#6R]",
+        "Aromatic": "[a]"
+    }
+
+    for name, smarts in patterns.items():
+        pattern = Chem.MolFromSmarts(smarts)
+        if pattern and mol.HasSubstructMatch(pattern):
+            functional_groups.append(name)
+
+    # Additional checks for specific structures
+    if mol.HasSubstructMatch(Chem.MolFromSmarts('[R]')) and not any(group in functional_groups for group in ["Aromatic", "Lactam"]):
+        functional_groups.append("Alicyclic")
+
+    return functional_groups
+
+
+
+def generate_functional_group_vector(functional_groups):
+    all_groups = [
+        "Alkyl halide", "Alcohol", "Aldehyde", "Ketone", "Carboxylic acid",
+        "Ester", "Ether", "Amine", "Amide", "Nitro", "Nitrile", "Sulfide", 
+        "Sulfoxide", "Sulfone", "Phosphate", "Phenol", "Imine", "Alkene", 
+        "Alkyne", "Thiol", "Acyl chloride", "Anhydride", "Lactam", 
+        "Aromatic"
+    ]
+    
+    vector = [1 if group in functional_groups else 0 for group in all_groups]
+    return vector
+
+...
+
+\end{verbatim}
 
 \section{Implementação}
-...
+
+
+
+
 
 \section{Conclusão}
+
 ...
 
-
-
+%------------------------------------------------------------------------
 % Comment out the bibliography-related commands if you don't have a .bib file
 % \bibliographystyle{plain}
 % \bibliography{references}
