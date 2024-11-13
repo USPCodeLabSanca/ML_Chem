@@ -1,0 +1,3 @@
+O.Func checker
+
+https://github.com/jeffrichardchemistry/pyCheckmol/blob/master/pyCheckmol/data/fg_list.csv
