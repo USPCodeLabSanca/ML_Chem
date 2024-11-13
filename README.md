@@ -2,15 +2,15 @@
 
 # CodeBase WalkThrough
 
-|- Documentation  -> pdf Explaining project and implementation
-|- Info           -> Images for ReadMe
-|- Main_Code      -> Main CodeBase
-    |- Spectrometry_IR     -> Ir Spectra AI
-        |- NIST                  -> AI_Versions_NIST
-            |- AI_Versions_NIST      -> AI verions
-            |- Mk_Dataset_NIST       -> Making the Dataset
-        |- SDBS                  -> SDBS (Database)(Same Structure)
-    |- Cristalography_XRD        -> Images for ReadMe
+|- Documentation  -> pdf Explaining project and implementation··  
+|- Info           -> Images for ReadMe··  
+|- Main_Code      -> Main CodeBase··  
+    |- Spectrometry_IR     -> Ir Spectra AI··  
+        |- NIST                  -> AI_Versions_NIST··  
+            |- AI_Versions_NIST      -> AI verions··  
+            |- Mk_Dataset_NIST       -> Making the Dataset··  
+        |- SDBS                  -> SDBS (Database)(Same Structure)··  
+    |- Cristalography_XRD        -> Images for ReadMe··  
 
 
 Nesse projeto mostramos a aplicabilidade de Diversas arquiteturas de Redes Neurais para área de espectroscopia, onde usamos ondas, como Raio-x e  Infravermelho para analisar de diversas formas a estrutura de diversos tipos e famílias de moléculas. 
