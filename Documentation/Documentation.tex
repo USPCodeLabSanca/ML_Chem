@@ -5,6 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{color}
 
 % Document information
 \title{Rede Neurais para Espectroscopia IR}
@@ -25,7 +26,7 @@
 \section{Introdução}
 Atuais métodos de análise de espectros de IR (infravermelho) envolvem técnicas manuais e computacionais. Tradicionalmente, químicos experientes interpretam visualmente os picos e padrões do espectro, comparando-os com tabelas de referência e bibliotecas espectrais. Softwares especializados auxiliam nessa análise, oferecendo recursos de comparação automática com bancos de dados e identificação de grupos funcionais. No entanto, esses métodos podem ser demorados e sujeitos a erros humanos, especialmente para moléculas complexas ou misturas. 
 
-Redes neurais apresentam uma quebra de paradigma na forma que conhecemos e estudamos os padrões emergentes da natureza, pela grande maioria da história essa tarefa foi feita por mentes humanas que analisavam e modelavam tais padrões e criavam modelos e métodos determinísticos para detecção desses padrões. No entanto com o avanço de redes neurais e da computação em paralelo podemos extrair estes padrões emergentes diretamente de grandes quantidades de dados, e de certa forma “cristaliza-los” em arquiteturas de redes neurais, as quais podem ser utilizadas para generalizar estes padrões em dados não vistos previamente.
+Redes neurais apresentam uma quebra de paradigma na forma que reconhecemos e estudamos os padrões emergentes da natureza, pela grande maioria da história essa tarefa foi feita por mentes humanas que analisavam e modelavam tais padrões e criavam modelos e métodos determinísticos para detecção desses padrões. No entanto com o avanço de redes neurais e da computação em paralelo podemos extrair estes padrões emergentes diretamente de grandes quantidades de dados, e de certa forma “cristaliza-los” em arquiteturas de redes neurais, as quais podem ser utilizadas para generalizar estes padrões em dados não vistos previamente.
 
 Inicialmente testamos o uso de redes neurais no reconhecimento de moléculas inorgânicas usando ondas de Raio-x(XRD) para classificação de moléculas, no entanto a simplicidade do problema, devido a natureza das moléculas inorgânicas mostrou que este problema já tinha sido mapeado de forma algorítmica, onde se pode simplesmente buscar um grande dicionário, achando o pico de maior intensidade e em seguida o segundo e assim em diante.
 
@@ -50,7 +51,7 @@ Espectroscopia de infravermelho é uma técnica analítica versátil na química
     \label{fig:ir_spectrum}
 \end{figure}
 
-Em uma implementação de classificação usamos o espectro como input e usamos uma rede neural para gerar um output na ultima camada uma distribuição de probabilidade em cima de um dicionário de moléculas conhecidas. Assim, assumimos que a molécula com maior probabilidade é a escolha da rede neural, também é importante criar um threshold onde se à maior probabilidade for menor que este threshold, então dizemos que a rede neural “não tem certeza”. Isso pode acontecer quando colocamos como input uma molécula que não estava nos dados usados para treinar e dessa forma a rede neural não aprendeu a classificá-la.
+Em uma implementação de classificação usamos o espectro como input e usamos uma rede neural para gerar um output na ultima camada uma distribuição de probabilidade(Softmax) em cima de um dicionário de moléculas conhecidas. Assim, assumimos que a molécula com maior probabilidade é a escolha da rede neural, também é importante criar um threshold onde se à maior probabilidade for menor que este threshold, então dizemos que a rede neural “não tem certeza”. Isso pode acontecer quando colocamos como input uma molécula que não estava nos dados usados para treinar e dessa forma a rede neural não aprendeu a classificá-la.
 
 
 \section{Classificacao funcoes organicas em espectros de IR}
@@ -67,7 +68,7 @@ Diferentemente do problema de classificação de moléculas, a classificação d
 \end{figure}
 
 
-No problema de classificação  de moléculas recebemos o espectro como input e criamos uma distribuição de probabilidades de ser cada molécula, que pode ser somado para 1, pois a amostra apenas pode ser uma molécula do dicionário. No entanto uma molécula pode conter mais de uma função orgânica, assim na classificação de funções orgânicas  o output final não soma para 1, mas sim cada neurônio na camada final representa uma  independente de 0 a 1 desta função orgânica está presente na molécula. 
+No problema de classificação  de moléculas recebemos o espectro como input e criamos uma distribuição de probabilidades de ser cada molécula, que pode ser somado para 1, pois a amostra apenas pode ser uma molécula do dicionário. No entanto uma molécula pode conter mais de uma função orgânica, assim na classificação de funções orgânicas  o output final não soma para 1, mas sim cada neurônio na camada final representa uma probabilidade independente de 0 a 1 desta função orgânica estar presente na molécula. 
 
 
 \section{Dados}
@@ -154,9 +155,11 @@ print("Todos os processos foram concluídos.")
 
 \end{verbatim}
 
-\subsection{Worker, Conseguindo os Labels}
+\section{Labels/Rótulos}
 
 Para treinar redes neurais é necessário conter um conjunto de dados rotulados, com os respectivos, inputs para a rede e output “perfeito” esperado, note a nuance nesta palavra, a rede neural irá tratar os respectivos rótulos como o output perfeito a qual ele deve se assemelhar, isso gera uma dependência extremamente grande em dados que contenham não apenas um input compreensível e padronizado mas também dados extremamente bem rotulados, pois as possíveis imperfeições dos rótulos serão interpretados como perfeições a serem aprendidas pela rede neural.
+
+\subsection{Primeira Tentativa de adquirir os rótulos}
 
 Aqui apresentamos a estrutura do worker que cria os vetores como rótulos com índices correspondentes a o dicionário de funções orgânicas, e 1 ou 0 caso esta molécula tenha ou não a presença desta função orgânica.
 
@@ -226,8 +229,68 @@ def generate_functional_group_vector(functional_groups):
 
 \end{verbatim}
 
+
+%----------------------------------------------
+
+
+\subsection{Segunda Tentativa de adquirir os rótulos}
+
+No entanto, ao analisar os vetores correspondentes, foi visto que os rótulos estavam com um grande índice de erro, checando mais exemplos concluímos que um jeito melhor de conseguir os rótulos a partir dos nomes ou do smiles seria necessário. Assim usamos o módulo pyCheckmol. (Veja PDF Associado)
+
+
+O pyCheckmol é uma biblioteca Python que implementa funcionalidades similares ao programa Checkmol, originalmente desenvolvido em Pascal. O projeto, disponível em \url{https://github.com/jeffrichardchemistry/pyCheckmol}, visa fornecer uma alternativa em Python para a detecção de grupos funcionais em moléculas.
+
+Principais características do pyCheckmol:
+
+\begin{itemize}
+    \item Implementa a detecção de grupos funcionais usando SMARTS patterns, similar ao Checkmol original
+    \item Utiliza a biblioteca RDKit como base para manipulação de estruturas moleculares
+    \item Suporta entrada de moléculas em formato SMILES
+    \item Detecta diversos grupos funcionais comuns em química orgânica
+    \item Fornece uma API simples e fácil de usar em Python
+\end{itemize}
+
+%----------------------------------------------
+
 \section{Implementação}
 
+\subsection{Arquitetura da Rede Neural}
+
+{\color{red}(EM ANDAMENTO, APENAS NOTAS INICIAIS...)}\\
+{\color{red}(VER ARQUIVO IR\_NN(v0.1).ipynb)(MLP)}
+
+Futuramente, pretendemos explorar o uso de Redes Neurais Convolucionais (CNN) para melhorar o desempenho do modelo. As CNNs são especialmente eficazes no processamento de dados com padrões espaciais ou sequenciais, e podem ser mais adequadas para análise espectral do que as redes neurais tradicionais (MLP). 
+
+
+A arquitetura inicial da rede neural implementada é definida pela seguinte classe em PyTorch:
+
+\begin{verbatim}
+
+class ImprovedNN(nn.Module):
+    def __init__(self):
+        super(ImprovedNN, self).__init__()
+        self.fc1 = nn.Linear(980, 512)
+        self.fc2 = nn.Linear(512, 256) 
+        self.fc3 = nn.Linear(256, 64)
+        self.fc4 = nn.Linear(64, 24)
+        
+        self.ln1 = nn.LayerNorm(512)
+        self.ln2 = nn.LayerNorm(256)
+        self.ln3 = nn.LayerNorm(64)
+        
+        # He initialization
+        nn.init.kaiming_normal_(self.fc1.weight, nonlinearity='leaky_relu')
+        nn.init.kaiming_normal_(self.fc2.weight, nonlinearity='leaky_relu')
+        nn.init.kaiming_normal_(self.fc3.weight, nonlinearity='leaky_relu')
+        nn.init.kaiming_normal_(self.fc4.weight, nonlinearity='leaky_relu')
+
+    def forward(self, x):
+        x1 = F.leaky_relu(self.ln1(self.fc1(x)))
+        x2 = F.leaky_relu(self.ln2(self.fc2(x1))) + x1  # Residual connection
+        x3 = F.leaky_relu(self.ln3(self.fc3(x2)))
+        out = self.fc4(x3)
+        return out
+\end{verbatim}
 
 
 
